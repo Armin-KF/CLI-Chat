@@ -65,9 +65,9 @@ void handle_client(shared_ptr<tcp::socket> socket)
                 user_list += "\n";
 
                 boost::asio::write(*socket, boost::asio::buffer(user_list));
-                broadcast_message(user_list, socket); // Broadcast updated user list to all clients except the new one
+                broadcast_message(user_list, socket);
             }
-            else if (message.rfind("@", 0) == 0) // Direct message to specific user
+            else if (message.rfind("@", 0) == 0)
             {
                 size_t pos = message.find(':');
                 if (pos != string::npos)

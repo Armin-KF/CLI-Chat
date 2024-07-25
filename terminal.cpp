@@ -12,6 +12,7 @@ const string RED = "\033[31m";
 const string GREEN = "\033[32m";
 const string YELLOW = "\033[33m";
 const string BLUE = "\033[34m";
+const string PURPLE = "\033[35m";
 const string GREEN_CIRCLE = "\033[32m\u25CF\033[0m";
 
 void print_centered(const string &text, int console_width, const string &color = "")
@@ -79,7 +80,7 @@ void read_messages(shared_ptr<tcp::socket> socket, vector<string> &users)
     }
     catch (const std::exception &e)
     {
-        cerr << RED << "Failed to read from server: " << e.what() << RESET << endl;
+        cerr << RED << "Failed To Read From Server: " << e.what() << RESET << endl;
     }
 }
 
@@ -98,6 +99,7 @@ void show_online_users(const vector<string> &users, const string &username)
     if (!is_there_user_online)
     {
         cout << RED << "No Online Users" << RESET << endl;
+        cout << YELLOW << "=============================" << RESET << endl;
     }
 }
 
@@ -115,7 +117,7 @@ void terminal(boost::asio::io_context &io_context, const string &server, const s
         string username;
         vector<string> users;
 
-        cout << GREEN << "Welcome To CPP CLI Chat App" << RESET << endl;
+        cout << GREEN << "Welcome To CLI Chat App" << RESET << endl;
         cout << YELLOW << "=============================" << RESET << endl;
         cout << BLUE << "Please Enter Your Username : " << RESET << endl;
         cin >> username;
@@ -150,12 +152,20 @@ void terminal(boost::asio::io_context &io_context, const string &server, const s
 
         while (true)
         {
+
             cout << GREEN << "What Would You Like To DO ? " << endl;
-            cout << RED << "1. See The Online Users List" << RESET << endl;
-            cout << RED << "2. Chat" << RESET << endl;
-            cout << RED << "3. Exit" << RESET << endl;
+            cout << PURPLE << "1. See The Online Users List" << RESET << endl;
+            cout << PURPLE << "2. Chat" << RESET << endl;
+            cout << PURPLE << "3. Exit" << RESET << endl;
             int choice;
             cin >> choice;
+            if (cin.fail() || choice < 1 || choice > 3)
+            {
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << RED << "Invalid Input. Please Enter A Number Between 1 and 3." << RESET << endl;
+                continue;
+            }
             cout << YELLOW << "=============================" << RESET << endl;
 
             if (choice == 1)
@@ -180,6 +190,7 @@ void terminal(boost::asio::io_context &io_context, const string &server, const s
                 if (!has_online_users)
                 {
                     cout << RED << "No Online Users To Chat With. Returning To Main Menu." << RESET << endl;
+                    cout << YELLOW << " =============================" << RESET << endl;
                     continue;
                 }
 
@@ -188,7 +199,7 @@ void terminal(boost::asio::io_context &io_context, const string &server, const s
                 cin >> recipient;
                 if (recipient == "back" || recipient == "Back")
                 {
-                    continue; // Return to the main menu
+                    continue;
                 }
                 while (true)
                 {
@@ -202,14 +213,14 @@ void terminal(boost::asio::io_context &io_context, const string &server, const s
             }
             else if (choice == 3)
             {
-                cout << RED << "Goodbye" << RESET << endl;
-                boost::asio::write(*socket, boost::asio::buffer("disconnect:" + username + "\n"));
+                cout << RED << " Press Ctrl+C To Exit... " << RESET << endl;
+                boost::asio::write(*socket, boost::asio::buffer("Disconnected : " + username + "\n"));
                 users.clear();
                 break;
             }
             else
             {
-                cout << RED << "Invalid choice, please try again." << RESET << endl;
+                cout << RED << "Invalid choice." << RESET << endl;
             }
         }
 
