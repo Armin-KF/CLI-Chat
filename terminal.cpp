@@ -98,7 +98,7 @@ void show_online_users(const vector<string> &users, const string &username)
     if (!is_there_user_online)
     {
         cout << RED << "No Online Users" << RESET << endl;
-        }
+    }
 }
 
 void terminal(boost::asio::io_context &io_context, const string &server, const string &port)
@@ -165,16 +165,33 @@ void terminal(boost::asio::io_context &io_context, const string &server, const s
             else if (choice == 2)
             {
                 show_online_users(users, username);
+
+                // Check if there are online users before entering chat mode
+                bool has_online_users = false;
+                for (const auto &user : users)
+                {
+                    if (user != username)
+                    {
+                        has_online_users = true;
+                        break;
+                    }
+                }
+
+                if (!has_online_users)
+                {
+                    cout << RED << "No Online Users To Chat With. Returning To Main Menu." << RESET << endl;
+                    continue;
+                }
+
                 string recipient;
                 cout << GREEN << "Who Would You Like To Message? (Type 'Back' To Return To Main Menu) " << RESET << endl;
                 cin >> recipient;
                 if (recipient == "back" || recipient == "Back")
                 {
-                    break;
+                    continue; // Return to the main menu
                 }
                 while (true)
                 {
-
                     string message;
                     cout << BLUE << "Enter Your Message: " << RESET;
                     cin.ignore();
