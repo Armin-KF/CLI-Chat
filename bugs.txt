@@ -1,3 +1,7 @@
 after going in the msg loop the 'back' command dosent work 
 
 also the person receving the msg dosent see who is sending them the msg
+
+
+server needs more logs and info 
+also a display logo as well 
