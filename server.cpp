@@ -15,6 +15,11 @@ unordered_map<string, shared_ptr<tcp::socket>> user_sockets;
 set<string> online_users;
 mutex mtx;
 
+void log_event(const string &event)
+{
+    cout << "[LOG] " << event << endl;
+}
+
 void broadcast_message(const string &message, shared_ptr<tcp::socket> exclude_socket = nullptr)
 {
     lock_guard<mutex> lock(mtx);
@@ -33,6 +38,8 @@ void handle_client(shared_ptr<tcp::socket> socket)
     string username;
     try
     {
+        log_event("Client connected");
+
         while (true)
         {
             boost::asio::streambuf buffer;
@@ -49,6 +56,8 @@ void handle_client(shared_ptr<tcp::socket> socket)
                     online_users.insert(username);
                     user_sockets[username] = socket;
                 }
+
+                log_event("User registered: " + username);
 
                 string user_list = "users:";
                 {
@@ -75,18 +84,21 @@ void handle_client(shared_ptr<tcp::socket> socket)
                     string recipient = message.substr(1, pos - 1);
                     string direct_message = message.substr(pos + 1);
 
+                    log_event(username + " sent direct message to " + recipient + ": " + direct_message);
+
                     lock_guard<mutex> lock(mtx);
                     if (user_sockets.find(recipient) != user_sockets.end())
                     {
                         auto recipient_socket = user_sockets[recipient];
-                        boost::asio::async_write(*recipient_socket, boost::asio::buffer(direct_message + "\n"),
+                        boost::asio::async_write(*recipient_socket, boost::asio::buffer(username + ": " + direct_message + "\n"),
                                                  [](boost::system::error_code, std::size_t) {});
                     }
                 }
             }
             else
             {
-                broadcast_message(message + "\n");
+                log_event(username + " broadcasted message: " + message);
+                broadcast_message(username + ": " + message + "\n", socket);
             }
         }
     }
@@ -112,6 +124,7 @@ void handle_client(shared_ptr<tcp::socket> socket)
         lock_guard<mutex> lock(mtx);
         online_users.erase(username);
         user_sockets.erase(username);
+        log_event("User disconnected: " + username);
     }
 
     // Notify all clients about the updated user list
@@ -138,6 +151,7 @@ int main()
         boost::asio::io_context io_context;
         tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 4000));
         cout << "Server is running on port 4000" << endl;
+        log_event("Server started");
 
         while (true)
         {
@@ -149,6 +163,7 @@ int main()
     catch (std::exception &e)
     {
         cerr << "Exception: " << e.what() << "\n";
+        log_event("Server exception: " + string(e.what()));
     }
 
     return 0;

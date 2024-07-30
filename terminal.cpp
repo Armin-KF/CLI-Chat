@@ -48,6 +48,7 @@ void display_logo()
         cerr << "Error: " << e.what() << endl;
     }
 }
+
 void read_messages(shared_ptr<tcp::socket> socket, vector<string> &users)
 {
     try
@@ -74,7 +75,7 @@ void read_messages(shared_ptr<tcp::socket> socket, vector<string> &users)
             }
             else
             {
-                cout << YELLOW << "Message: " << RESET << message << endl;
+                cout << YELLOW << "Message : " << RESET << message << endl;
             }
         }
     }
@@ -201,12 +202,36 @@ void terminal(boost::asio::io_context &io_context, const string &server, const s
                 {
                     continue;
                 }
+
+                // Check if the recipient is an online user
+                bool is_valid_user = false;
+                for (const auto &user : users)
+                {
+                    if (user == recipient)
+                    {
+                        is_valid_user = true;
+                        break;
+                    }
+                }
+
+                if (!is_valid_user)
+                {
+                    cout << RED << "Error: Username Not Found. Returning To Main Menu." << RESET << endl;
+                    continue;
+                }
+
+                cin.ignore();
                 while (true)
                 {
                     string message;
-                    cout << BLUE << "Enter Your Message: " << RESET;
-                    cin.ignore();
+                    cout << BLUE << "Enter Your Message (or 'Back' to return to main menu): " << RESET;
                     getline(cin, message);
+
+                    if (message == "back" || message == "Back")
+                    {
+                        break;
+                    }
+
                     boost::asio::write(*socket, boost::asio::buffer("@" + recipient + ":" + message + "\n"));
                     cout << GREEN << "Message Sent" << RESET << endl;
                 }
