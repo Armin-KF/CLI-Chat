@@ -16,24 +16,11 @@ Welcome to the CLI Chat Application! This project implements a very simple chat 
 
 ![Client Main Menu](./Client.png)
 
-### Server
-
-![Server](./Server.png)
-
 ## Getting Started
 
 ### Prerequisites
 
 - Boost C++ Libraries
-
-### Building
-
-1. **Clone the repository**:
-
-   ```bash
-   git clone https://github.com/your-username/cli-chat-app.git
-   cd cli-chat-app
-   ```
 
 ### Running
 
