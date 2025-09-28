@@ -1,6 +1,6 @@
-# CLI-Chat: Enterprise-Grade Chat Application
+# CLI-Chat:Terminal Chat Application
 
-A professional, scalable chat application featuring TLS encryption, user authentication, message persistence, web interface, and horizontal scaling capabilities.
+A chat application featuring TLS encryption, user authentication, message persistence, web interface, and horizontal scaling capabilities.
 
 ## Features
 
@@ -85,7 +85,7 @@ npm install
 npm run build
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Server Configuration (`config/server.conf`)
 
@@ -155,7 +155,7 @@ docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d
 certbot certonly --standalone -d your-domain.com
 
 # Configure environment variables
-export CHAT_REDIS_PASSWORD="your-strong-password"
+export CHAT_REDIS_PASSWORD="your-password"
 ```
 
 ## Performance
