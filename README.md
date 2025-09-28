@@ -1,4 +1,4 @@
-# CLI-Chat:Terminal Chat Application
+# CLI-Chat: Terminal Chat Application
 
 A chat application featuring TLS encryption, user authentication, message persistence, web interface, and horizontal scaling capabilities.
 
