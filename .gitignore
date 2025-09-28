@@ -1,2 +1,169 @@
+# Build directories
+build/
+dist/
+target/
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Runtime data
+data/
+logs/
+*.log
+
+# SSL Certificates (development only)
+certs/
+*.pem
+*.crt
+*.key
+
+# Environment files (contain secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs
 .vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
 *.exe
+*.out
+*.app
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Docker
+.dockerignore
+
+# Redis dump files
+dump.rdb
+
+# Database files (sensitive data)
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+
+# Package files
+*.tar.gz
+*.zip
+*.rar
+
+# Python cache (if any scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Frontend specific
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production build artifacts
+frontend/build/
+frontend/dist/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# ESLint cache
+.eslintcache
+
+# npm cache
+.npm
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Docker override files (may contain local configs)
+docker-compose.override.yml
+
+# Production configs (contain real secrets)
+config/production.conf
+config/staging.conf
+config/*.production.*
+config/*.staging.*
+
+# Backup files
+*.bak
+*.backup
+
+# Session files
+sessions/
+*.session

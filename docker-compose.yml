@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: cli-chat-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - chat-network
+
+  chat-server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+    container_name: cli-chat-server
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+      - ./certs:/app/certs
+      - ./config:/app/config:ro
+    environment:
+      - CHAT_SERVER_HOST=0.0.0.0
+      - CHAT_SERVER_PORT=4000
+      - CHAT_TLS_ENABLED=true
+      - CHAT_DATABASE_PATH=data/chat.db
+      - CHAT_REDIS_HOST=redis
+      - CHAT_REDIS_PORT=6379
+      - CHAT_WEB_PORT=8080
+    depends_on:
+      - redis
+    networks:
+      - chat-network
+    healthcheck:
+      test: ["CMD", "netstat", "-an", "|", "grep", ":4000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  web-frontend:
+    image: nginx:alpine
+    container_name: cli-chat-web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html:ro
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - chat-server
+    networks:
+      - chat-network
+
+volumes:
+  redis_data:
+
+networks:
+  chat-network:
+    driver: bridge

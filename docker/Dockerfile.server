@@ -1,0 +1,43 @@
+FROM ubuntu:22.04
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    libboost-all-dev \
+    libssl-dev \
+    libsqlite3-dev \
+    libhiredis-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy source code
+COPY src/ ./src/
+COPY CMakeLists.txt ./
+COPY config/ ./config/
+
+# Create required directories
+RUN mkdir -p certs data
+
+# Build the application
+RUN cmake -B build -S . && \
+    cmake --build build --target chat_server
+
+# Create non-root user
+RUN useradd -m -u 1000 chatuser && \
+    chown -R chatuser:chatuser /app
+
+USER chatuser
+
+# Expose ports
+EXPOSE 4000 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD netstat -an | grep :4000 > /dev/null; if [ 0 = $? ]; then exit 0; else exit 1; fi
+
+# Start the server
+CMD ["./build/chat_server", "config/server.conf"]
