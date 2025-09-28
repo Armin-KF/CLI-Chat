@@ -26,7 +26,9 @@ public:
     // Redis configuration
     std::string getRedisHost() const { return redis_host_; }
     int getRedisPort() const { return redis_port_; }
-    std::string getRedisPassword() const { return redis_password_; }
+
+    // Password retrieval through secure secrets manager
+    std::string getRedisPassword() const;
 
     // Security configuration
     int getMaxUsers() const { return max_users_; }
@@ -51,7 +53,6 @@ private:
 
     std::string redis_host_ = "127.0.0.1";
     int redis_port_ = 6379;
-    std::string redis_password_ = "";
 
     int max_users_ = 1000;
     int max_message_length_ = 4096;

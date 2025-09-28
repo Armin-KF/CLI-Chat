@@ -167,3 +167,8 @@ config/*.staging.*
 # Session files
 sessions/
 *.session
+
+# Secrets (NEVER commit real secrets)
+secrets/secrets.conf
+secrets/*.conf
+!secrets/secrets.example.conf

@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include "secrets.hpp"
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
@@ -42,7 +43,7 @@ void Config::loadFromFile(const std::string& filename) {
         else if (key == "database_path") database_path_ = value;
         else if (key == "redis_host") redis_host_ = value;
         else if (key == "redis_port") redis_port_ = std::stoi(value);
-        else if (key == "redis_password") redis_password_ = value;
+        // NOTE: redis_password is now handled by SecretsManager
         else if (key == "max_users") max_users_ = std::stoi(value);
         else if (key == "max_message_length") max_message_length_ = std::stoi(value);
         else if (key == "session_timeout") session_timeout_ = std::stoi(value);
@@ -62,7 +63,8 @@ void Config::loadFromEnv() {
     if ((env_val = std::getenv("CHAT_DATABASE_PATH"))) database_path_ = env_val;
     if ((env_val = std::getenv("CHAT_REDIS_HOST"))) redis_host_ = env_val;
     if ((env_val = std::getenv("CHAT_REDIS_PORT"))) redis_port_ = std::stoi(env_val);
-    if ((env_val = std::getenv("CHAT_REDIS_PASSWORD"))) redis_password_ = env_val;
+    // SECURITY: Redis password no longer loaded from environment variables
+    // Use secrets file instead: /etc/cli-chat/secrets or ./secrets/secrets.conf
     if ((env_val = std::getenv("CHAT_MAX_USERS"))) max_users_ = std::stoi(env_val);
     if ((env_val = std::getenv("CHAT_MAX_MESSAGE_LENGTH"))) max_message_length_ = std::stoi(env_val);
     if ((env_val = std::getenv("CHAT_SESSION_TIMEOUT"))) session_timeout_ = std::stoi(env_val);
@@ -70,8 +72,15 @@ void Config::loadFromEnv() {
     if ((env_val = std::getenv("CHAT_WEB_ROOT"))) web_root_ = env_val;
 }
 
+std::string Config::getRedisPassword() const {
+    return SecretsManager::getInstance().getRedisPassword();
+}
+
 void Config::setDefaults() {
     // Defaults are already set in the header file
+
+    // Initialize secrets manager
+    SecretsManager::getInstance().initialize("secrets/secrets.conf");
 }
 
 } // namespace chat

@@ -27,6 +27,7 @@ add_library(common STATIC
     src/common/auth.cpp
     src/common/logger.cpp
     src/common/redis_client.cpp
+    src/common/secrets.cpp
 )
 
 target_link_libraries(common
